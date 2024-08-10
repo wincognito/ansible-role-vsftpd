@@ -1,0 +1,24 @@
+---
+
+vsftpd_pasv_min_port: 12000
+vsftpd_pasv_max_port: 12100
+# vsftpd_rsa_cert_file: "/etc/ssl/certs/ssl-cert-snakeoil.pem"
+# vsftpd_rsa_private_key_file: "/etc/ssl/private/ssl-cert-snakeoil.key"
+
+# A real user used as a local user, or a skeleton for virtual users (guests)
+vsftpd_user_home: "/var/ftp/{{ vsftpd_user_name }}"
+vsftpd_user_group: "{{ vsftpd_user_name }}"
+vsftpd_user_name: "ftpuser"
+
+# As default all users are in a chroot jail
+vsftpd_users_excluded_from_chroot_jail: []
+# - ftpuser1
+
+vsftpd_users_temporary_disabled: []
+# - ftpuser1
+
+vsftpd_virtual_users:
+- name: ftpuser1
+  # password:
+  # config: |
+  #   local_root={{ vsftpd_user_home }}/{{ item.name }}

@@ -1,0 +1,7 @@
+# Standard behaviour for ftpd(8).
+auth    required        pam_listfile.so item=user sense=deny file=/etc/ftpusers onerr=succeed
+
+# Note: vsftpd handles anonymous logins on its own. Do not enable pam_ftp.so.
+
+auth    required        {{ pam_userdb_filename }} db=/etc/vsftpd/vuserlist
+account required        {{ pam_userdb_filename }} db=/etc/vsftpd/vuserlist

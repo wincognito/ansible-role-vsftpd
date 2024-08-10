@@ -1,0 +1,20 @@
+---
+
+- name: Install packages
+  import_tasks:
+    file: install.yml
+  tags:
+  - install
+
+- name: Create users
+  import_tasks:
+    file: user.yml
+  tags:
+  - user
+
+- name: Configure vsftpd
+  import_tasks:
+    file: configure.yml
+  tags:
+  - config
+  - configure

@@ -1,0 +1,5 @@
+---
+
+vsftpd_nologin_path: /usr/sbin/nologin
+vsftpd_default_user_config: |
+  local_root={{ vsftpd_user_home }}/users/{{ item.name }}

@@ -1,0 +1,100 @@
+# Create virtual user for working with FTP
+
+# useradd -d /data/ftproot virtusers -s /sbin/nologin
+# based on
+# https://www.alibabacloud.com/help/en/ecs/how-to-construct-vsftp-and-configure-virtual-users
+# https://sources.debian.org/src/vsftpd/3.0.3-8/EXAMPLE/VIRTUAL_USERS/README/
+# https://infoloup.no-ip.org/ftps-vsftpd-debian12/
+- name: Create local user
+  user:
+    comment: "{{ vsftpd_user_name }} ONLY for FTP access"
+    create_home: yes
+    home: "{{ vsftpd_user_home}}"
+    name: "{{ vsftpd_user_name }}"
+    shell: "{{ vsftpd_nologin_path }}"
+  tags:
+  - user
+
+# /data                                           # The data directory that can be used for data backup.
+# └── [drwxr-xr-x]  ftpuser                       # The directory of the FTP service.
+#     └── [dr-x------]  vuser1                    # The home directory of the virtual user vuser1. You can create home directories for users such as vuser2 and vuser3 based on your business requirements.
+#         └── [drwxr-xr-x]  files                 # The working directory of the virtual user vuser1 in which read and write operations are allowed.
+- name: Set local user home directory permissions
+  file:
+    path: "{{ vsftpd_user_home}}"
+    owner: "{{ vsftpd_user_name }}"
+    group: "{{ vsftpd_user_group }}"
+    mode: "0755"
+    state: directory
+  tags:
+  - user
+
+- name: Create virtual user home directory
+  file:
+    path: "{{ vsftpd_user_home }}/users/{{ item.name }}"
+    owner: "{{ vsftpd_user_name }}"
+    group: "{{ vsftpd_user_group }}"
+    mode: "0500"
+    state: directory
+  loop: "{{ vsftpd_virtual_users }}"
+  no_log: true
+  tags:
+  - user
+  - vuser
+
+- name: Create virtual user files root directory
+  file:
+    path: "{{ vsftpd_user_home }}/users/{{ item.name }}/files"
+    owner: "{{ vsftpd_user_name }}"
+    group: "{{ vsftpd_user_group }}"
+    mode: "0755"
+    state: directory
+  loop: "{{ vsftpd_virtual_users }}"
+  no_log: true
+  tags:
+  - user
+  - vuser
+
+- name: Create config directory
+  file:
+    path: /etc/vsftpd/vuser_conf
+    state: directory
+  tags:
+  - user
+  - vuser
+  - vuserlist
+
+- name: Create config files for virtual users
+  copy:
+    content: "{{ item.config | default(vsftpd_default_user_config) }}"
+    dest: "/etc/vsftpd/vuser_conf/{{ item.name }}"
+  loop: "{{ vsftpd_virtual_users }}"
+  no_log: true
+
+- name: Create /etc/vsftpd/vuserlist
+  template:
+    src: templates/vuserlist.j2
+    dest: /etc/vsftpd/vuserlist
+    mode: "0600"
+  register: update_vuserlist
+  tags:
+  - vuser
+  - vuserlist
+
+- name: Update DB file
+  command: db_load -T -t hash -f /etc/vsftpd/vuserlist /etc/vsftpd/vuserlist.db
+  when: update_vuserlist.changed
+  tags:
+  - vuser
+  - vuserlist
+  - vuserdb
+
+- name: Set permissions of DB file
+  file:
+    path: /etc/vsftpd/vuserlist.db
+    mode: "0600"
+  tags:
+  - vuser
+  - vuserlist
+  - vuserdb
+

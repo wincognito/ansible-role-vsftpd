@@ -1,0 +1,4 @@
+# Users excluded from chroot jail
+{% for user in vsftpd_users_excluded_from_chroot_jail %}
+{{ user }}
+{% endfor %}

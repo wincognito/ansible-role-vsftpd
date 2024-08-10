@@ -1,0 +1,15 @@
+- name: Install packages
+  apt:
+    pkg:
+    - vsftpd
+    - db-util # required for create vuserlist.db
+    update_cache: true
+  tags:
+  - install
+
+- name: Create backup of /etc/vsftpd.conf
+  copy:
+    src: /etc/vsftpd.conf
+    dest: /etc/vsftpd.conf.original
+    force: false
+    remote_src: true

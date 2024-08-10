@@ -1,0 +1,46 @@
+- name: Create /etc/vsftpd.conf
+  template:
+    src: templates/vsftpd.conf.j2
+    dest: /etc/vsftpd.conf
+  notify:
+  - Reload vsftpd
+
+- name: Create list of disabled users in /etc/vsftpd/disabled-users
+  template:
+    src: templates/disabled-users.j2
+    dest: /etc/vsftpd/disabled-users
+
+- name: Create list of excluded from chroot jail users in /etc/vsftpd/excluded-from-chroot-users
+  template:
+    src: templates/excluded-from-chroot-jail-users.j2
+    dest: /etc/vsftpd/excluded-from-chroot-jail-users
+
+- name: Find pam_userdb.so
+  find:
+    paths:
+    - /lib
+    - /lib64
+    - /opt
+    - /sbin
+    - /srv
+    - /usr
+    recurse: true
+    patterns:
+    - pam_userdb.so
+  register: pam_userdb
+  tags:
+  - pam
+
+- name: Set pam_userdb.so filename
+  set_fact:
+    pam_userdb_filename: "{{ pam_userdb.files[0].path }}"
+  when: pam_userdb.matched > 0
+  tags:
+  - pam
+
+- name: Update PAM for vsftpd
+  template:
+    src: templates/vsftpd.virtual.j2
+    dest: /etc/pam.d/vsftpd.virtual
+  tags:
+  - pam
