@@ -4,9 +4,9 @@ VSFTPD
 Installs VSFTPD on Debian.
 
 Based on:  
-# https://www.alibabacloud.com/help/en/ecs/how-to-construct-vsftp-and-configure-virtual-users
-# https://sources.debian.org/src/vsftpd/3.0.3-8/EXAMPLE/VIRTUAL_USERS/README/
-# https://infoloup.no-ip.org/ftps-vsftpd-debian12/
+https://www.alibabacloud.com/help/en/ecs/how-to-construct-vsftp-and-configure-virtual-users
+https://sources.debian.org/src/vsftpd/3.0.3-8/EXAMPLE/VIRTUAL_USERS/README/
+https://infoloup.no-ip.org/ftps-vsftpd-debian12/
 
 
 Requirements
@@ -103,5 +103,5 @@ MIT
 Author Information
 ------------------
 
-(c) 2024 Pawel Idzikowski
+(c) 2024 Pawel Idzikowski  
 Wincognito
