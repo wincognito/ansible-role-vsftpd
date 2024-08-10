@@ -4,9 +4,9 @@ VSFTPD
 Installs VSFTPD on Debian.
 
 Based on:  
-https://www.alibabacloud.com/help/en/ecs/how-to-construct-vsftp-and-configure-virtual-users
-https://sources.debian.org/src/vsftpd/3.0.3-8/EXAMPLE/VIRTUAL_USERS/README/
-https://infoloup.no-ip.org/ftps-vsftpd-debian12/
+https://www.alibabacloud.com/help/en/ecs/how-to-construct-vsftp-and-configure-virtual-users  
+https://sources.debian.org/src/vsftpd/3.0.3-8/EXAMPLE/VIRTUAL_USERS/README/  
+https://infoloup.no-ip.org/ftps-vsftpd-debian12/  
 
 
 Requirements
@@ -23,7 +23,9 @@ Define users.
 
 `name` and `password` are required.
 
-`config` is optional. Use all variables from the specification:  
+`config` is optional.  If not defined, the `vsftpd_default_user_config` will be used.
+
+You can use all variables from the specification:  
 https://linux.die.net/man/5/vsftpd.conf
 
 ```
@@ -82,7 +84,7 @@ Install vsftpd
       password: cleartext2
 ```
 
-Invoke particular tasks using tags, or by invoking them in a playbook.
+Invoke particular tasks using `tags`, or by invoking them in a playbook, as below.
 
 ```
 - name: Install vsftpd
