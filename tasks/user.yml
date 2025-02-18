@@ -34,7 +34,7 @@
     path: "{{ vsftpd_user_home }}/users/{{ item.name }}"
     owner: "{{ vsftpd_user_name }}"
     group: "{{ vsftpd_user_group }}"
-    mode: "0500"
+    mode: "0550"
     state: directory
   loop: "{{ vsftpd_virtual_users }}"
   no_log: true
